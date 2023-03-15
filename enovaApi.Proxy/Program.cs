@@ -1,4 +1,13 @@
 using enovaApi.Proxy;
+using Microsoft.Extensions.Configuration;
+
+Cryptography.Configure();
+if (args.Contains("--generateCrypto"))
+{
+    Console.WriteLine($"IV: {Cryptography.GetIV()}");
+    Console.WriteLine($"Key: {Cryptography.GetKey()}");
+    Environment.Exit(0);
+}
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -7,6 +16,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.WebHost.UseKestrel();
 if (args.Any(x => x.StartsWith("--urls")))
@@ -24,9 +34,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 // key and iv can be changed by Cryptography.GetIV() and Cryptography.GetKey() then replaced below
-Cryptography.SetIV("WfEwqyJ4Pm3b0F6nnrLLKQ==");
-Cryptography.SetKey("BJaVbPFXNBN59bZCn1ORpKTH7b7UrJ4zj7KFBrHMaSk=");
+Cryptography.SetIV(builder.Configuration.GetValue<string>("IV") ?? throw new Exception("IV value cannot be null."));
+Cryptography.SetKey(builder.Configuration.GetValue<string>("Key") ?? throw new Exception("Key value cannot be null"));
 
 app.UseHttpsRedirection();
 

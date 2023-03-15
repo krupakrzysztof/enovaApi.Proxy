@@ -28,9 +28,9 @@ namespace enovaApi.Proxy.Controllers
         {
             var body = await Request.Body.GetString();
             var jObject = JObject.Parse(body);
-            if (jObject["ApiKey"] != null)
+            var key = jObject["ApiKey"];
+            if (key != null)
             {
-                var key = jObject["ApiKey"];
                 jObject.Remove("ApiKey");
                 jObject.Remove("Operator");
                 jObject.Remove("Password");

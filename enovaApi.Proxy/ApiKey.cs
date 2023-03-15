@@ -1,10 +1,22 @@
-﻿namespace enovaApi.Proxy
+﻿using System.Security.Cryptography;
+
+namespace enovaApi.Proxy
 {
     public class ApiKey
     {
+        public ApiKey()
+        {
+            GenerateKey();
+        }
+
         public string Key { get; set; } = string.Empty;
         public string Operator { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+
+        public void GenerateKey()
+        {
+            Key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        }
 
         public override string ToString()
         {

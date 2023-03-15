@@ -7,14 +7,40 @@ namespace enovaApi.Proxy
     {
         private static Aes Aes { get; } = Aes.Create();
 
+        internal static void Configure()
+        {
+            Aes.BlockSize = 128;
+            Aes.KeySize = 256;
+        }
+
         public static void SetIV(string iv)
         {
-            Aes.IV = Convert.FromBase64String(iv);
+            byte[] encodedIv;
+            try
+            {
+                encodedIv = Convert.FromBase64String(iv);
+            }
+            catch
+            {
+                // add some log
+                throw;
+            }
+            Aes.IV = encodedIv;
         }
 
         public static void SetKey(string key)
         {
-            Aes.Key = Convert.FromBase64String(key);
+            byte[] encodedKey;
+            try
+            {
+                encodedKey = Convert.FromBase64String(key);
+            }
+            catch
+            {
+                // add some log
+                throw;
+            }
+            Aes.Key = encodedKey;
         }
 
         public static string Decrypt(string base64cipher)
